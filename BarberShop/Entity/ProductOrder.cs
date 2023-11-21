@@ -1,0 +1,23 @@
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace BarberShop.Entity
+{
+    public class ProductOrder
+    {
+        [Key]
+        public int proOrderID { get; set; }
+        public string? proOrderQuantity { get; set; }
+
+        #region QH
+
+        // MO
+        // Order
+        public int orderID { get; set; }
+        public Order Order { get; set; } = null!;
+        // product
+        [ForeignKey("proID")]
+        public Product Product { get; set; } = null!;
+        #endregion
+    }
+}
