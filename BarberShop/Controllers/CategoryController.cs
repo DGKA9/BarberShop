@@ -3,6 +3,7 @@ using BarberShop.DTO;
 using BarberShop.Unit;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BarberShop.Controllers
 {
@@ -35,7 +36,7 @@ namespace BarberShop.Controllers
             return Ok(category);
         }
 
-        [HttpPost]
+        [HttpPost, Authorize(Roles = "2")]
         public IActionResult CreateCategory(CategoryDto categoryModel)
         {
             if (categoryModel == null)
@@ -50,7 +51,7 @@ namespace BarberShop.Controllers
             return CreatedAtAction(nameof(GetCategory), new { id = categoryDto.cateID }, categoryDto);
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("{id}"), Authorize(Roles = "2")]
         public IActionResult UpdateCategory(int id, CategoryDto updatedCategoryModel)
         {
             var existingCategoryEntity = _unitOfWork.CategoryRepository.GetById<CategoryDto>(id);
@@ -69,7 +70,7 @@ namespace BarberShop.Controllers
         }
 
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{id}"), Authorize(Roles = "2")]
         public IActionResult DeleteCategory(int id)
         {
             var categoryEntity = _unitOfWork.CategoryRepository.GetById<CategoryDto>(id);

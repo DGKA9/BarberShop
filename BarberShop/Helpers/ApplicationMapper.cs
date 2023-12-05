@@ -29,7 +29,7 @@ namespace BarberShop.Helpers
             CreateMap<Role, RoleDto>().ReverseMap();
             CreateMap<ServiceCategory, ServiceCategoryDto>().ReverseMap();
             CreateMap<ServiceManagement, ServiceManagementDto>().ReverseMap();
-            CreateMap<Service, ServiceDto>().ReverseMap();
+            CreateMap<Services, ServicesDto>().ReverseMap();
             CreateMap<Store, StoreDto>().ReverseMap();
             CreateMap<User, UserDto>().ReverseMap();
             CreateMap<Warehouse, WarehouseDto>().ReverseMap();

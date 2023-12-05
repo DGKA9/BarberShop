@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BarberShop.Entity
 {
-    public class Service
+    public class Services
     {
         [Key]
         public int serID { get; set; }

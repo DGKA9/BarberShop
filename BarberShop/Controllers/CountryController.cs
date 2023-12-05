@@ -3,11 +3,12 @@ using BarberShop.DTO;
 using BarberShop.Unit;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BarberShop.Controllers
 {
     [Route("api/[controller]")]
-    [ApiController]
+    [ApiController, Authorize(Roles = "2")]
     public class CountryController : ControllerBase
     {
         private readonly UnitOfWork _unitOfWork;

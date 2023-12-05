@@ -1,6 +1,6 @@
 ﻿namespace BarberShop.DTO
 {
-    public class ServiceDto
+    public class ServicesDto
     {
         public int serID { get; set; }
         public string? serName { get; set; }

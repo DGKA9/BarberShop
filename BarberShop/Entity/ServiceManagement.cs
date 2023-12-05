@@ -16,7 +16,7 @@ namespace BarberShop.Entity
         public Store Store { get; set; } = null!;
         // Service
         [ForeignKey("serID")]
-        public Service Service { get; set; } = null!;
+        public Services Service { get; set; } = null!;
         #endregion
     }
 }

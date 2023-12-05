@@ -50,25 +50,25 @@ namespace BarberShop.Controllers
             return CreatedAtAction(nameof(GetUser), new { id = userDto.userID }, userDto);
         }
 
-        [HttpPut("{id}")]
-        public IActionResult UpdateUser(int id, UserDto updatedUserModel)
-        {
-            var existingUserEntity = _unitOfWork.UserRepository.GetById<UserDto>(id);
+        //[HttpPut("{id}")]
+        //public IActionResult UpdateUser(int id, UserDto updatedUserModel)
+        //{
+        //    var existingUserEntity = _unitOfWork.UserRepository.GetById<UserDto>(id);
 
-            if (existingUserEntity == null)
-                return NotFound();
+        //    if (existingUserEntity == null)
+        //        return NotFound();
 
-            _unitOfWork.UserRepository.UpdateProperties(id, entity =>
-            {
-                entity.userName = updatedUserModel.userName;
-                entity.password = updatedUserModel.password;
-                entity.roleID = updatedUserModel.roleID;
-            });
+        //    _unitOfWork.UserRepository.UpdateProperties(id, entity =>
+        //    {
+        //        entity.userName = updatedUserModel.userName;
+        //        entity.PasswordSalt = updatedUserModel.password;
+        //        entity.roleID = updatedUserModel.roleID;
+        //    });
 
-            _unitOfWork.Commit();
+        //    _unitOfWork.Commit();
 
-            return Ok(new { message = "Cập nhật thành công" });
-        }
+        //    return Ok(new { message = "Cập nhật thành công" });
+        //}
 
 
         [HttpDelete("{id}")]

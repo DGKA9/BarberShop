@@ -3,6 +3,7 @@ using BarberShop.DTO;
 using BarberShop.Unit;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BarberShop.Controllers
 {
@@ -35,7 +36,7 @@ namespace BarberShop.Controllers
             return Ok(bookingService);
         }
 
-        [HttpPost]
+        [HttpPost, Authorize(Roles = "2")]
         public IActionResult CreateBookingService(BookingServiceDto bookingServiceModel)
         {
             if (bookingServiceModel == null)
@@ -50,7 +51,7 @@ namespace BarberShop.Controllers
             return CreatedAtAction(nameof(GetBookingService), new { id = bookingServiceDto.bookingServiceID }, bookingServiceDto);
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("{id}"), Authorize(Roles = "2")]
         public IActionResult UpdateBookingService(int id, BookingServiceDto updatedBookingServiceModel)
         {
             var existingBookingServiceEntity = _unitOfWork.BookingServiceRepository.GetById<BookingServiceDto>(id);
@@ -70,7 +71,7 @@ namespace BarberShop.Controllers
         }
 
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{id}"), Authorize(Roles = "2")]
         public IActionResult DeleteBookingService(int id)
         {
             var bookingServiceEntity = _unitOfWork.BookingServiceRepository.GetById<BookingServiceDto>(id);

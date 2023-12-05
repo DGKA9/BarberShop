@@ -16,7 +16,7 @@ namespace BarberShop.Entity
             public Booking booking { get; set; } = null!;
             // Service
             public int serviceID { get; set; }
-            public Service Service { get; set; } = null!;
+            public Services Service { get; set; } = null!;
         #endregion
     }
 }

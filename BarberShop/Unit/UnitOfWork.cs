@@ -32,11 +32,12 @@ namespace BarberShop.Unit
         public IRepository<Role> RoleRepository { get; set; } = null!;
         public IRepository<ServiceCategory> ServiceCategoryRepository { get; set; } = null!;
         public IRepository<ServiceManagement> ServiceManagementRepository { get; set; } = null!;
-        public IRepository<Service> ServiceRepository { get; set; } = null!;
+        public IRepository<Services> ServiceRepository { get; set; } = null!;
         public IRepository<Store> StoreRepository { get; set; } = null!;
         public IRepository<User> UserRepository { get; set; } = null!;
         public IRepository<Warehouse> WarehouseRepository { get; set; } = null!;
         public IRepository<WorkingHour> WorkingHourRepository { get; set; } = null!;
+
 
         public UnitOfWork(BarberShopContext context, IMapper mapper)
         {
@@ -69,7 +70,7 @@ namespace BarberShop.Unit
             RoleRepository = new GenericRepository<Role>(_context, mapper);
             ServiceCategoryRepository = new GenericRepository<ServiceCategory>(_context, mapper);
             ServiceManagementRepository = new GenericRepository<ServiceManagement>(_context, mapper);
-            ServiceRepository = new GenericRepository<Service>(_context, mapper);
+            ServiceRepository = new GenericRepository<Services>(_context, mapper);
             StoreRepository = new GenericRepository<Store>(_context, mapper);
             UserRepository = new GenericRepository<User>(_context, mapper);
             WarehouseRepository = new GenericRepository<Warehouse>(_context, mapper);

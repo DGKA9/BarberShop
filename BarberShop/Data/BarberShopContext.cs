@@ -34,7 +34,7 @@ namespace BarberShop.Data
         public DbSet<Product>? Products { get; set;}
         public DbSet<ProductOrder>? ProductOrder { get; set; }
         public DbSet<Role>? Role { get; set; }
-        public DbSet<Service>? Service { get; set; }
+        public DbSet<Services>? Service { get; set; }
         public DbSet<ServiceCategory>? ServiceCategories { get; set; }
         public DbSet<ServiceManagement>? ServiceManagement { get; set; }
         public DbSet<User>? Users { get; set; }

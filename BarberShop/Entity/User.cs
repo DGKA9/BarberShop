@@ -7,8 +7,8 @@ namespace BarberShop.Entity
         [Key]
         public int userID { get; set; }
         public string? userName { get; set; }
-        public string? password { get; set; }
-
+        public byte[]? PasswordHash { get; set; }
+        public byte[]? PasswordSalt { get; set; }
 
         #region QH
 

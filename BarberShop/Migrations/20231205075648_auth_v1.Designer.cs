@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BarberShop.Migrations
 {
     [DbContext(typeof(BarberShopContext))]
-    [Migration("20231109085401_success")]
-    partial class success
+    [Migration("20231205075648_auth_v1")]
+    partial class auth_v1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -77,28 +77,6 @@ namespace BarberShop.Migrations
                     b.ToTable("Bookings");
                 });
 
-            modelBuilder.Entity("BarberShop.Entity.BookingSateDescription", b =>
-                {
-                    b.Property<int>("sateID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("sateID"), 1L, 1);
-
-                    b.Property<int>("bookingID")
-                        .HasColumnType("int");
-
-                    b.Property<string>("description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("sateID");
-
-                    b.HasIndex("bookingID")
-                        .IsUnique();
-
-                    b.ToTable("BookingsSateDescription");
-                });
-
             modelBuilder.Entity("BarberShop.Entity.BookingService", b =>
                 {
                     b.Property<int>("bookingServiceID")
@@ -120,6 +98,28 @@ namespace BarberShop.Migrations
                     b.HasIndex("serviceID");
 
                     b.ToTable("BookingsService");
+                });
+
+            modelBuilder.Entity("BarberShop.Entity.BookingStateDescription", b =>
+                {
+                    b.Property<int>("stateID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("stateID"), 1L, 1);
+
+                    b.Property<int>("bookingID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("stateID");
+
+                    b.HasIndex("bookingID")
+                        .IsUnique();
+
+                    b.ToTable("BookingStateDescription");
                 });
 
             modelBuilder.Entity("BarberShop.Entity.Category", b =>
@@ -183,9 +183,6 @@ namespace BarberShop.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("customerID"), 1L, 1);
 
-                    b.Property<int>("addressID")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("dateOfBirth")
                         .HasColumnType("datetime2");
 
@@ -209,13 +206,33 @@ namespace BarberShop.Migrations
 
                     b.HasKey("customerID");
 
-                    b.HasIndex("addressID")
-                        .IsUnique();
-
                     b.HasIndex("userID")
                         .IsUnique();
 
                     b.ToTable("Customer");
+                });
+
+            modelBuilder.Entity("BarberShop.Entity.CustomerAddress", b =>
+                {
+                    b.Property<int>("cusAddressId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("cusAddressId"), 1L, 1);
+
+                    b.Property<int>("addressID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("customerID")
+                        .HasColumnType("int");
+
+                    b.HasKey("cusAddressId");
+
+                    b.HasIndex("addressID");
+
+                    b.HasIndex("customerID");
+
+                    b.ToTable("CustomerAddress");
                 });
 
             modelBuilder.Entity("BarberShop.Entity.CustomerNotification", b =>
@@ -535,33 +552,6 @@ namespace BarberShop.Migrations
                     b.ToTable("Role");
                 });
 
-            modelBuilder.Entity("BarberShop.Entity.Service", b =>
-                {
-                    b.Property<int>("serID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("serID"), 1L, 1);
-
-                    b.Property<int>("serCateID")
-                        .HasColumnType("int");
-
-                    b.Property<string>("serDescription")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("serName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<float>("serPrice")
-                        .HasColumnType("real");
-
-                    b.HasKey("serID");
-
-                    b.HasIndex("serCateID");
-
-                    b.ToTable("Service");
-                });
-
             modelBuilder.Entity("BarberShop.Entity.ServiceCategory", b =>
                 {
                     b.Property<int>("serCateID")
@@ -604,6 +594,33 @@ namespace BarberShop.Migrations
                     b.ToTable("ServiceManagement");
                 });
 
+            modelBuilder.Entity("BarberShop.Entity.Services", b =>
+                {
+                    b.Property<int>("serID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("serID"), 1L, 1);
+
+                    b.Property<int>("serCateID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("serDescription")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("serName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<float>("serPrice")
+                        .HasColumnType("real");
+
+                    b.HasKey("serID");
+
+                    b.HasIndex("serCateID");
+
+                    b.ToTable("Service");
+                });
+
             modelBuilder.Entity("BarberShop.Entity.Store", b =>
                 {
                     b.Property<int>("storeID")
@@ -636,8 +653,11 @@ namespace BarberShop.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("userID"), 1L, 1);
 
-                    b.Property<string>("password")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<byte[]>("PasswordHash")
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<byte[]>("PasswordSalt")
+                        .HasColumnType("varbinary(max)");
 
                     b.Property<int>("roleID")
                         .HasColumnType("int");
@@ -693,11 +713,11 @@ namespace BarberShop.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("workingHourID"), 1L, 1);
 
-                    b.Property<DateTime>("endTime")
-                        .HasColumnType("datetime2");
+                    b.Property<TimeSpan>("endTime")
+                        .HasColumnType("time");
 
-                    b.Property<DateTime>("startTime")
-                        .HasColumnType("datetime2");
+                    b.Property<TimeSpan>("startTime")
+                        .HasColumnType("time");
 
                     b.HasKey("workingHourID");
 
@@ -734,17 +754,6 @@ namespace BarberShop.Migrations
                     b.Navigation("payment");
                 });
 
-            modelBuilder.Entity("BarberShop.Entity.BookingSateDescription", b =>
-                {
-                    b.HasOne("BarberShop.Entity.Booking", "Booking")
-                        .WithOne("BookingSateDescription")
-                        .HasForeignKey("BarberShop.Entity.BookingSateDescription", "bookingID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Booking");
-                });
-
             modelBuilder.Entity("BarberShop.Entity.BookingService", b =>
                 {
                     b.HasOne("BarberShop.Entity.Booking", "booking")
@@ -753,7 +762,7 @@ namespace BarberShop.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BarberShop.Entity.Service", "Service")
+                    b.HasOne("BarberShop.Entity.Services", "Service")
                         .WithMany("BookingServices")
                         .HasForeignKey("serviceID")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -762,6 +771,17 @@ namespace BarberShop.Migrations
                     b.Navigation("Service");
 
                     b.Navigation("booking");
+                });
+
+            modelBuilder.Entity("BarberShop.Entity.BookingStateDescription", b =>
+                {
+                    b.HasOne("BarberShop.Entity.Booking", "Booking")
+                        .WithOne("BookingSateDescription")
+                        .HasForeignKey("BarberShop.Entity.BookingStateDescription", "bookingID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Booking");
                 });
 
             modelBuilder.Entity("BarberShop.Entity.City", b =>
@@ -777,21 +797,32 @@ namespace BarberShop.Migrations
 
             modelBuilder.Entity("BarberShop.Entity.Customer", b =>
                 {
-                    b.HasOne("BarberShop.Entity.Address", "Address")
-                        .WithOne("Customer")
-                        .HasForeignKey("BarberShop.Entity.Customer", "addressID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("BarberShop.Entity.User", "User")
                         .WithOne("Customer")
                         .HasForeignKey("BarberShop.Entity.Customer", "userID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("BarberShop.Entity.CustomerAddress", b =>
+                {
+                    b.HasOne("BarberShop.Entity.Address", "Address")
+                        .WithMany("customers")
+                        .HasForeignKey("addressID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BarberShop.Entity.Customer", "Customer")
+                        .WithMany("addresses")
+                        .HasForeignKey("customerID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Address");
 
-                    b.Navigation("User");
+                    b.Navigation("Customer");
                 });
 
             modelBuilder.Entity("BarberShop.Entity.CustomerNotification", b =>
@@ -954,20 +985,9 @@ namespace BarberShop.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("BarberShop.Entity.Service", b =>
-                {
-                    b.HasOne("BarberShop.Entity.ServiceCategory", "ServiceCategory")
-                        .WithMany("services")
-                        .HasForeignKey("serCateID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ServiceCategory");
-                });
-
             modelBuilder.Entity("BarberShop.Entity.ServiceManagement", b =>
                 {
-                    b.HasOne("BarberShop.Entity.Service", "Service")
+                    b.HasOne("BarberShop.Entity.Services", "Service")
                         .WithMany("ServiceManagement")
                         .HasForeignKey("serID")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -982,6 +1002,17 @@ namespace BarberShop.Migrations
                     b.Navigation("Service");
 
                     b.Navigation("Store");
+                });
+
+            modelBuilder.Entity("BarberShop.Entity.Services", b =>
+                {
+                    b.HasOne("BarberShop.Entity.ServiceCategory", "ServiceCategory")
+                        .WithMany("services")
+                        .HasForeignKey("serCateID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ServiceCategory");
                 });
 
             modelBuilder.Entity("BarberShop.Entity.Store", b =>
@@ -1027,13 +1058,13 @@ namespace BarberShop.Migrations
 
             modelBuilder.Entity("BarberShop.Entity.Address", b =>
                 {
-                    b.Navigation("Customer");
-
                     b.Navigation("Employees");
 
                     b.Navigation("Producer");
 
                     b.Navigation("Warehouse");
+
+                    b.Navigation("customers");
                 });
 
             modelBuilder.Entity("BarberShop.Entity.Booking", b =>
@@ -1069,6 +1100,8 @@ namespace BarberShop.Migrations
                     b.Navigation("Evaluations");
 
                     b.Navigation("Orders");
+
+                    b.Navigation("addresses");
                 });
 
             modelBuilder.Entity("BarberShop.Entity.Notification", b =>
@@ -1096,16 +1129,16 @@ namespace BarberShop.Migrations
                     b.Navigation("users");
                 });
 
-            modelBuilder.Entity("BarberShop.Entity.Service", b =>
+            modelBuilder.Entity("BarberShop.Entity.ServiceCategory", b =>
+                {
+                    b.Navigation("services");
+                });
+
+            modelBuilder.Entity("BarberShop.Entity.Services", b =>
                 {
                     b.Navigation("BookingServices");
 
                     b.Navigation("ServiceManagement");
-                });
-
-            modelBuilder.Entity("BarberShop.Entity.ServiceCategory", b =>
-                {
-                    b.Navigation("services");
                 });
 
             modelBuilder.Entity("BarberShop.Entity.Store", b =>

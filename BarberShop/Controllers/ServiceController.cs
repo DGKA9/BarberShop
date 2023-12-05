@@ -20,14 +20,14 @@ namespace BarberShop.Controllers
         [HttpGet]
         public IActionResult GetService()
         {
-            var service = _unitOfWork.ServiceRepository.GetAll<ServiceDto>();
+            var service = _unitOfWork.ServiceRepository.GetAll<ServicesDto>();
             return Ok(service);
         }
 
         [HttpGet("{id}")]
         public IActionResult GetService(int id)
         {
-            var service = _unitOfWork.ServiceRepository.GetById<ServiceDto>(id);
+            var service = _unitOfWork.ServiceRepository.GetById<ServicesDto>(id);
 
             if (service == null)
                 return NotFound();
@@ -36,24 +36,24 @@ namespace BarberShop.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateService(ServiceDto serviceModel)
+        public IActionResult CreateService(ServicesDto serviceModel)
         {
             if (serviceModel == null)
                 return BadRequest();
 
-            var serviceEntity = _unitOfWork.Mapper.Map<Service>(serviceModel);
+            var serviceEntity = _unitOfWork.Mapper.Map<Services>(serviceModel);
             _unitOfWork.ServiceRepository.Add(serviceEntity);
             _unitOfWork.Commit();
 
-            var serviceDto = _unitOfWork.Mapper.Map<ServiceDto>(serviceEntity);
+            var serviceDto = _unitOfWork.Mapper.Map<ServicesDto>(serviceEntity);
 
             return CreatedAtAction(nameof(GetService), new { id = serviceDto.serID }, serviceDto);
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdateService(int id, ServiceDto updatedServiceModel)
+        public IActionResult UpdateService(int id, ServicesDto updatedServiceModel)
         {
-            var existingServiceEntity = _unitOfWork.ServiceRepository.GetById<ServiceDto>(id);
+            var existingServiceEntity = _unitOfWork.ServiceRepository.GetById<ServicesDto>(id);
 
             if (existingServiceEntity == null)
                 return NotFound();
@@ -76,7 +76,7 @@ namespace BarberShop.Controllers
         [HttpDelete("{id}")]
         public IActionResult DeleteService(int id)
         {
-            var serviceEntity = _unitOfWork.ServiceRepository.GetById<ServiceDto>(id);
+            var serviceEntity = _unitOfWork.ServiceRepository.GetById<ServicesDto>(id);
 
             if (serviceEntity == null)
                 return NotFound();
@@ -91,7 +91,7 @@ namespace BarberShop.Controllers
         [HttpGet("search")]
         public IActionResult SearchServices([FromQuery] string servicekey)
         {
-            var servicees = _unitOfWork.ServiceRepository.Search<ServiceDto>(service =>
+            var servicees = _unitOfWork.ServiceRepository.Search<ServicesDto>(service =>
                             service.serName != null &&
                             service.serName.Contains(servicekey));
             return Ok(servicees);

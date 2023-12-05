@@ -2,6 +2,7 @@
 using BarberShop.DTO;
 using BarberShop.Unit;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BarberShop.Controllers
 {
@@ -34,7 +35,7 @@ namespace BarberShop.Controllers
             return Ok(address);
         }
 
-        [HttpPost]
+        [HttpPost, Authorize(Roles = "2")]
         public IActionResult CreateAddress(AddressDto addressModel)
         {
             if (addressModel == null)
@@ -49,7 +50,7 @@ namespace BarberShop.Controllers
             return CreatedAtAction(nameof(GetAddress), new { id = addressDto.addressID }, addressDto);
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("{id}"), Authorize(Roles = "2")]
         public IActionResult UpdateAddress(int id, AddressDto updatedAddressModel)
         {
             var existingAddressEntity = _unitOfWork.AddressRepository.GetById<AddressDto>(id);
@@ -72,7 +73,7 @@ namespace BarberShop.Controllers
         }
 
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{id}"), Authorize(Roles = "2")]
         public IActionResult DeleteAddress(int id)
         {
             var addressEntity = _unitOfWork.AddressRepository.GetById<AddressDto>(id);

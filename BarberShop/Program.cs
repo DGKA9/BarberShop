@@ -1,8 +1,14 @@
 using BarberShop.Data;
 using BarberShop.Entity;
 using BarberShop.Repository;
+using BarberShop.Service;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.Filters;
 using System.Reflection;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,7 +17,30 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options => {
+    options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+    {
+        Description = "Standard Authorization header using the Bearer scheme (\"bearer {token}\")",
+        In = ParameterLocation.Header,
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey
+    });
+
+    options.OperationFilter<SecurityRequirementsOperationFilter>();
+});
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8
+                .GetBytes(builder.Configuration.GetSection("Jwt:Key").Value)),
+            ValidateIssuer = false,
+            ValidateAudience = false
+        };
+    });
 
 builder.Services.AddCors(options => options.AddDefaultPolicy(policy => policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()));
 
@@ -45,13 +74,17 @@ builder.Services.AddScoped<IRepository<Producer>, GenericRepository<Producer>>()
 builder.Services.AddScoped<IRepository<Product>, GenericRepository<Product>>();
 builder.Services.AddScoped<IRepository<ProductOrder>, GenericRepository<ProductOrder>>();
 builder.Services.AddScoped<IRepository<Role>, GenericRepository<Role>>();
-builder.Services.AddScoped<IRepository<Service>, GenericRepository<Service>>();
+builder.Services.AddScoped<IRepository<Services>, GenericRepository<Services>>();
 builder.Services.AddScoped<IRepository<ServiceCategory>, GenericRepository<ServiceCategory>>();
 builder.Services.AddScoped<IRepository<ServiceManagement>, GenericRepository<ServiceManagement>>();
 builder.Services.AddScoped<IRepository<Store>, GenericRepository<Store>>();
 builder.Services.AddScoped<IRepository<User>, GenericRepository<User>>();
 builder.Services.AddScoped<IRepository<Warehouse>, GenericRepository<Warehouse>>();
 builder.Services.AddScoped<IRepository<WorkingHour>, GenericRepository<WorkingHour>>();
+#endregion
+
+#region JWT
+
 #endregion
 
 builder.Services.AddScoped<BarberShop.Unit.UnitOfWork>();
@@ -66,6 +99,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

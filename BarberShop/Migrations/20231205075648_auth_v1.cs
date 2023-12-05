@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace BarberShop.Migrations
 {
-    public partial class success : Migration
+    public partial class auth_v1 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -97,8 +97,8 @@ namespace BarberShop.Migrations
                 {
                     workingHourID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    startTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    endTime = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    startTime = table.Column<TimeSpan>(type: "time", nullable: false),
+                    endTime = table.Column<TimeSpan>(type: "time", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -132,7 +132,8 @@ namespace BarberShop.Migrations
                     userID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     userName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    password = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PasswordHash = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
+                    PasswordSalt = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
                     roleID = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -212,6 +213,31 @@ namespace BarberShop.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Customer",
+                columns: table => new
+                {
+                    customerID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    firstName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    lastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    picture = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    email = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    numberphone = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    dateOfBirth = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    userID = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Customer", x => x.customerID);
+                    table.ForeignKey(
+                        name: "FK_Customer_Users_userID",
+                        column: x => x.userID,
+                        principalTable: "Users",
+                        principalColumn: "userID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "LocationStore",
                 columns: table => new
                 {
@@ -263,38 +289,6 @@ namespace BarberShop.Migrations
                         column: x => x.storeID,
                         principalTable: "Stores",
                         principalColumn: "storeID",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Customer",
-                columns: table => new
-                {
-                    customerID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    firstName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    lastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    picture = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    email = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    numberphone = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    dateOfBirth = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    addressID = table.Column<int>(type: "int", nullable: false),
-                    userID = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Customer", x => x.customerID);
-                    table.ForeignKey(
-                        name: "FK_Customer_Address_addressID",
-                        column: x => x.addressID,
-                        principalTable: "Address",
-                        principalColumn: "addressID",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Customer_Users_userID",
-                        column: x => x.userID,
-                        principalTable: "Users",
-                        principalColumn: "userID",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -412,6 +406,32 @@ namespace BarberShop.Migrations
                         column: x => x.payID,
                         principalTable: "Payment",
                         principalColumn: "payID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CustomerAddress",
+                columns: table => new
+                {
+                    cusAddressId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    customerID = table.Column<int>(type: "int", nullable: false),
+                    addressID = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CustomerAddress", x => x.cusAddressId);
+                    table.ForeignKey(
+                        name: "FK_CustomerAddress_Address_addressID",
+                        column: x => x.addressID,
+                        principalTable: "Address",
+                        principalColumn: "addressID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CustomerAddress_Customer_customerID",
+                        column: x => x.customerID,
+                        principalTable: "Customer",
+                        principalColumn: "customerID",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -537,26 +557,6 @@ namespace BarberShop.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "BookingsSateDescription",
-                columns: table => new
-                {
-                    sateID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    bookingID = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_BookingsSateDescription", x => x.sateID);
-                    table.ForeignKey(
-                        name: "FK_BookingsSateDescription_Bookings_bookingID",
-                        column: x => x.bookingID,
-                        principalTable: "Bookings",
-                        principalColumn: "bookingID",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "BookingsService",
                 columns: table => new
                 {
@@ -579,6 +579,26 @@ namespace BarberShop.Migrations
                         column: x => x.serviceID,
                         principalTable: "Service",
                         principalColumn: "serID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "BookingStateDescription",
+                columns: table => new
+                {
+                    stateID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    bookingID = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BookingStateDescription", x => x.stateID);
+                    table.ForeignKey(
+                        name: "FK_BookingStateDescription_Bookings_bookingID",
+                        column: x => x.bookingID,
+                        principalTable: "Bookings",
+                        principalColumn: "bookingID",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -606,7 +626,7 @@ namespace BarberShop.Migrations
                         column: x => x.proID,
                         principalTable: "Products",
                         principalColumn: "proID",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -625,12 +645,6 @@ namespace BarberShop.Migrations
                 column: "payID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_BookingsSateDescription_bookingID",
-                table: "BookingsSateDescription",
-                column: "bookingID",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
                 name: "IX_BookingsService_bookingID",
                 table: "BookingsService",
                 column: "bookingID");
@@ -641,21 +655,31 @@ namespace BarberShop.Migrations
                 column: "serviceID");
 
             migrationBuilder.CreateIndex(
+                name: "IX_BookingStateDescription_bookingID",
+                table: "BookingStateDescription",
+                column: "bookingID",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_City_countryID",
                 table: "City",
                 column: "countryID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Customer_addressID",
-                table: "Customer",
-                column: "addressID",
-                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Customer_userID",
                 table: "Customer",
                 column: "userID",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CustomerAddress_addressID",
+                table: "CustomerAddress",
+                column: "addressID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CustomerAddress_customerID",
+                table: "CustomerAddress",
+                column: "customerID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_CustomerNotification_customerID",
@@ -784,10 +808,13 @@ namespace BarberShop.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "BookingsSateDescription");
+                name: "BookingsService");
 
             migrationBuilder.DropTable(
-                name: "BookingsService");
+                name: "BookingStateDescription");
+
+            migrationBuilder.DropTable(
+                name: "CustomerAddress");
 
             migrationBuilder.DropTable(
                 name: "CustomerNotification");

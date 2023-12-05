@@ -11,7 +11,7 @@ namespace BarberShop.Entity
 
 
         #region QH
-        public ICollection<Service> services { get; set; } = new HashSet<Service>();
+        public ICollection<Services> services { get; set; } = new HashSet<Services>();
         #endregion
     }
 }
